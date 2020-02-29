@@ -1,13 +1,16 @@
 package com.example.flashlight
 
+import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
 import android.widget.RemoteViews
 
 /**
  * Implementation of App Widget functionality.
  */
+//AppWidgetProvider라는 브로드캐스트 리시버 클래스를 상속받음
 class TorchAppWidget : AppWidgetProvider() {
     override fun onUpdate(
         context: Context,
@@ -38,7 +41,11 @@ internal fun updateAppWidget(
     // Construct the RemoteViews object
     val views = RemoteViews(context.packageName, R.layout.torch_app_widget)
     views.setTextViewText(R.id.appwidget_text, widgetText)
-
+    //실행할 Intent 작성
+    val intent = Intent(context, TorchService::class.java)
+    val pendingIntent = PendingIntent.getService(context, 0 ,intent, 0)
+    //위젯을 클릭하면 위에서 정의한 Intent 실행
+    views.setOnClickPendingIntent(R.id.appwidget_layout, pendingIntent)
     // Instruct the widget manager to update the widget
     appWidgetManager.updateAppWidget(appWidgetId, views)
 }
